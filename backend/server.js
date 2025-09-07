@@ -38,7 +38,7 @@ app.use('/api/menu', require('./routes/menu'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'healthy',
     message: 'Dobby Cafe Backend API is running!',
     uptime: process.uptime(),
@@ -49,7 +49,7 @@ app.get('/api/health', (req, res) => {
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'Dobby Cafe Backend Server Running! 🚀',
     timestamp: new Date().toISOString(),
     status: 'success',
@@ -67,16 +67,17 @@ app.get('/', (req, res) => {
 
 // 404 handler
 app.use((req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: `Endpoint not found: ${req.method} ${req.path}` 
+  res.status(404).json({
+    success: false,
+    message: `Endpoint not found: ${req.method} ${req.path}`
   });
 });
 
 // Global error handling middleware
-app.use((err, req, res, next) => {
+// Error handling middleware
+app.use((err, req, res, _next) => {
   console.error('Global error handler:', err.stack);
-  
+
   // JWT errors
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
@@ -84,7 +85,7 @@ app.use((err, req, res, next) => {
       message: 'Invalid token'
     });
   }
-  
+
   if (err.name === 'TokenExpiredError') {
     return res.status(401).json({
       success: false,
@@ -100,20 +101,23 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Dobby Cafe Backend Server running on http://localhost:${PORT}`);
-  console.log(`📡 Environment: ${process.env.NODE_ENV}`);
-  console.log(`📡 API endpoints available:`);
-  console.log(`   GET  /                      - Server status`);
-  console.log(`   GET  /api/health            - Health check`);
-  console.log(`   POST /api/auth/login        - Login`);
-  console.log(`   GET  /api/auth/me           - Get profile`);
-  console.log(`   POST /api/auth/logout       - Logout`);
-  console.log(`   GET  /api/menu              - Get menu items`);
-  console.log(`   GET  /api/menu/categories   - Get categories`);
-  console.log(`💾 Database: PostgreSQL`);
-  console.log(`🔐 Authentication: JWT`);
-  console.log(`✅ Security: Helmet + CORS + Validation`);
-});
+// Only start server if not in test environment
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Dobby Cafe Backend Server running on http://localhost:${PORT}`);
+    console.log(`📡 Environment: ${process.env.NODE_ENV}`);
+    console.log('📡 API endpoints available:');
+    console.log('   GET  /                      - Server status');
+    console.log('   GET  /api/health            - Health check');
+    console.log('   POST /api/auth/login        - Login');
+    console.log('   GET  /api/auth/me           - Get profile');
+    console.log('   POST /api/auth/logout       - Logout');
+    console.log('   GET  /api/menu              - Get menu items');
+    console.log('   GET  /api/menu/categories   - Get categories');
+    console.log('💾 Database: PostgreSQL');
+    console.log('🔐 Authentication: JWT');
+    console.log('✅ Security: Helmet + CORS + Validation');
+  });
+}
 
 module.exports = app;

@@ -58,7 +58,6 @@ const getMenuItems = async (req, res) => {
       success: true,
       data: result.rows
     });
-
   } catch (error) {
     console.error('Get menu items error:', error);
     res.status(500).json({
@@ -73,7 +72,8 @@ const getCategories = async (req, res) => {
     const userCompanyId = req.user.company_id;
 
     const result = await pool.query(
-      'SELECT * FROM categories WHERE company_id = $1 AND is_active = true ORDER BY sort_order, name',
+      `SELECT * FROM categories WHERE company_id = $1 
+       AND is_active = true ORDER BY sort_order, name`,
       [userCompanyId]
     );
 
@@ -81,7 +81,6 @@ const getCategories = async (req, res) => {
       success: true,
       data: result.rows
     });
-
   } catch (error) {
     console.error('Get categories error:', error);
     res.status(500).json({

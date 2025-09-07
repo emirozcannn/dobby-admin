@@ -14,7 +14,7 @@ const login = async (req, res) => {
       LEFT JOIN branches b ON u.branch_id = b.id
       WHERE u.email = $1 AND u.is_active = true
     `;
-    
+
     const userResult = await pool.query(userQuery, [email]);
 
     if (userResult.rows.length === 0) {
@@ -28,7 +28,7 @@ const login = async (req, res) => {
 
     // Check password
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    
+
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -37,10 +37,7 @@ const login = async (req, res) => {
     }
 
     // Update last login
-    await pool.query(
-      'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1',
-      [user.id]
-    );
+    await pool.query('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
 
     // Generate JWT token
     const token = generateToken(user);
@@ -61,7 +58,6 @@ const login = async (req, res) => {
         branch_name: user.branch_name
       }
     });
-
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({
@@ -99,7 +95,6 @@ const getProfile = async (req, res) => {
       success: true,
       user: result.rows[0]
     });
-
   } catch (error) {
     console.error('Get profile error:', error);
     res.status(500).json({

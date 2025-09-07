@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const generateToken = (user) => {
+const generateToken = user => {
   const payload = {
     id: user.id,
     email: user.email,
@@ -14,10 +14,10 @@ const generateToken = (user) => {
   });
 };
 
-const verifyToken = (token) => {
+const verifyToken = token => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid token');
   }
 };
@@ -25,7 +25,7 @@ const verifyToken = (token) => {
 const authMiddleware = (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
@@ -35,10 +35,10 @@ const authMiddleware = (req, res, next) => {
 
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
     const decoded = verifyToken(token);
-    
+
     req.user = decoded;
     next();
-  } catch (error) {
+  } catch {
     return res.status(401).json({
       success: false,
       message: 'Invalid or expired token'
@@ -46,7 +46,7 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-const roleMiddleware = (allowedRoles) => {
+const roleMiddleware = allowedRoles => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({

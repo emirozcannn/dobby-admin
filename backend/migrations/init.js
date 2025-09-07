@@ -2,7 +2,7 @@ const { pool } = require('../config/database');
 
 const createTables = async () => {
   const client = await pool.connect();
-  
+
   try {
     console.log('📦 Creating database tables...');
 
@@ -115,7 +115,6 @@ const createTables = async () => {
     `);
 
     console.log('✅ All tables created successfully!');
-
   } catch (error) {
     console.error('❌ Error creating tables:', error);
     throw error;
@@ -126,7 +125,7 @@ const createTables = async () => {
 
 const insertSampleData = async () => {
   const client = await pool.connect();
-  
+
   try {
     console.log('📝 Inserting sample data...');
 
@@ -142,32 +141,41 @@ const insertSampleData = async () => {
     if (companyResult.rows.length > 0) {
       companyId = companyResult.rows[0].id;
     } else {
-      const existingCompany = await client.query('SELECT id FROM companies WHERE email = $1', ['admin@dobby.com']);
+      const existingCompany = await client.query('SELECT id FROM companies WHERE email = $1', [
+        'admin@dobby.com'
+      ]);
       companyId = existingCompany.rows[0].id;
     }
 
-    // Insert sample branches
-    const branchResult = await client.query(`
+    // Insert sample branches for the company
+    await pool.query(
+      `
       INSERT INTO branches (company_id, name, address, phone) 
       VALUES 
         ($1, 'Dobby Cafe Kadıköy', 'Kadıköy, İstanbul', '+90 555 111 2233'),
         ($1, 'Dobby Cafe Beşiktaş', 'Beşiktaş, İstanbul', '+90 555 111 2244')
       ON CONFLICT DO NOTHING
       RETURNING id;
-    `, [companyId]);
+    `,
+      [companyId]
+    );
 
     // Insert admin user
     const bcrypt = require('bcryptjs');
     const hashedPassword = await bcrypt.hash('123456', parseInt(process.env.BCRYPT_ROUNDS));
 
-    await client.query(`
+    await client.query(
+      `
       INSERT INTO users (company_id, username, email, password_hash, role, full_name)
       VALUES ($1, 'admin', 'admin@dobby.com', $2, 'company_admin', 'Admin User')
       ON CONFLICT (email) DO NOTHING;
-    `, [companyId, hashedPassword]);
+    `,
+      [companyId, hashedPassword]
+    );
 
     // Insert sample categories
-    await client.query(`
+    await client.query(
+      `
       INSERT INTO categories (company_id, name, sort_order)
       VALUES 
         ($1, 'Kahve', 1),
@@ -175,10 +183,11 @@ const insertSampleData = async () => {
         ($1, 'İçecek', 3),
         ($1, 'Tatlı', 4)
       ON CONFLICT DO NOTHING;
-    `, [companyId]);
+    `,
+      [companyId]
+    );
 
     console.log('✅ Sample data inserted successfully!');
-
   } catch (error) {
     console.error('❌ Error inserting sample data:', error);
     throw error;
