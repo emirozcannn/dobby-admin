@@ -1,5 +1,10 @@
 # Dobby Cafe - Full Stack Admin System
 
+[![CI/CD Pipeline](https://github.com/emirozcannn/dobby-admin/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/emirozcannn/dobby-admin/actions/workflows/ci-cd.yml)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-17%2F17%20Passing-brightgreen)](https://github.com/emirozcannn/dobby-admin)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-9%2F9%20Passing-brightgreen)](https://github.com/emirozcannn/dobby-admin)
+[![Code Style](https://img.shields.io/badge/Code%20Style-Prettier%20%2B%20ESLint-blue)](https://github.com/emirozcannn/dobby-admin)
+
 A self-service restaurant management platform for managing multiple cafe branches from a central admin panel.
 
 ## 🏗️ Tech Stack
@@ -223,13 +228,50 @@ BCRYPT_ROUNDS=12
 FRONTEND_URL=http://localhost:5173
 ```
 
+## 🚀 CI/CD Pipeline
+
+### Automated Testing & Deployment
+- **GitHub Actions**: Automated CI/CD pipeline
+- **Testing**: Backend (Jest) + Frontend (Vitest) tests on every push
+- **Code Quality**: ESLint + Prettier checks
+- **Security**: Trivy vulnerability scanning
+- **Docker**: Automated image building and pushing
+- **Coverage**: Codecov integration for test coverage tracking
+
+### Pipeline Features
+```yaml
+✅ Automated testing (17 backend + 9 frontend tests)
+✅ Code quality checks (ESLint + Prettier)
+✅ Security vulnerability scanning
+✅ Docker image building for production
+✅ Test coverage reporting
+✅ PR status checks
+```
+
+### Workflow Triggers
+- **Push to master**: Full CI/CD pipeline + deployment
+- **Pull Requests**: Tests + security scans only
+- **Manual**: Can be triggered manually from Actions tab
+
 ## 🤝 Contributing
 
+### Development Workflow
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Make your changes (auto-formatting with Prettier)
+4. **Pre-commit hooks** automatically run:
+   - ESLint checks
+   - Prettier formatting  
+   - Test execution
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request (triggers CI/CD pipeline)
+
+### Code Quality
+- **Husky**: Pre-commit hooks ensure code quality
+- **ESLint**: Consistent code style enforcement
+- **Prettier**: Automatic code formatting
+- **Jest/Vitest**: Comprehensive test coverage
+- **TypeScript**: Type safety in frontend
 
 ## 📄 License
 

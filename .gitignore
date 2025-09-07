@@ -10,6 +10,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.env.prod
 
 # Build outputs
 /frontend/dist/
@@ -73,3 +74,17 @@ Thumbs.db
 
 # Local development
 .cache/
+
+# Backups (sensitive data)
+backups/*.sql
+backups/*.dump
+
+# SSL Certificates
+ssl/
+*.pem
+*.key
+*.crt
+
+# Monitoring and logs
+monitoring/
+logs/
