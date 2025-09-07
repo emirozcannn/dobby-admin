@@ -125,21 +125,76 @@ ooby/
 - [ ] POS Integration
 - [ ] Docker Containerization
 
-## 🔧 Development
+## � Development Workflow
 
-### Backend Development
+### For Contributors
+
+#### First Time Setup
+1. Install Docker Desktop
+2. Clone the repository:
 ```bash
-cd backend
-npm run dev        # Start with nodemon
-npm run migrate    # Run database migrations
+git clone https://github.com/emirozcannn/dobby-admin.git
+cd dobby-admin
+```
+3. Start the application:
+```bash
+docker compose up -d
 ```
 
-### Frontend Development
+#### Daily Development
 ```bash
-cd frontend
-npm run dev        # Start Vite dev server
-npm run build      # Build for production
-npm run preview    # Preview production build
+# Pull latest changes
+git pull origin master
+
+# Update and restart (use one of these methods):
+
+# Method 1: Manual
+docker compose build
+docker compose up -d
+
+# Method 2: Update scripts
+./update.sh      # Linux/Mac
+update.bat       # Windows
+```
+
+#### Making Changes
+
+**Frontend Changes:**
+```bash
+# 1. Make changes in frontend/src/
+# 2. Commit and push
+git add .
+git commit -m "feat: your changes"
+git push origin master
+
+# 3. Rebuild frontend
+docker compose build frontend
+docker compose up -d
+```
+
+**Backend Changes:**
+```bash
+# 1. Make changes in backend/
+# 2. Commit and push
+git add .
+git commit -m "feat: your changes"
+git push origin master
+
+# 3. Rebuild backend
+docker compose build backend
+docker compose restart backend
+```
+
+**Database Changes:**
+```bash
+# 1. Create migration script in backend/migrations/
+# 2. Commit and push
+# 3. Run migration:
+docker run --rm --network ooby_dobby_network \\
+  -v "${PWD}/backend:/app" -w /app \\
+  -e DB_HOST=database -e DB_PORT=5432 \\
+  -e DB_NAME=dobby_cafe -e DB_USER=postgres -e DB_PASSWORD=postgres \\
+  node:20-alpine node migrations/your-migration.js
 ```
 
 ## 📝 Environment Variables
